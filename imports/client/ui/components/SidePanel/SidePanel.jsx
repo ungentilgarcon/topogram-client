@@ -10,9 +10,9 @@ import PanelDescription from './PanelDescription.jsx'
 import PanelFilters from './PanelFilters.jsx'
 import PanelSettings from './PanelSettings.jsx'
 
-import TitleBox from '../TitleBox.jsx'
+import TitleBox from '../titlebox/TitleBox.jsx'
 import UserMenu from '../UserMenu.jsx'
-
+import './SidePanel.css'
 
 @ui()
 export default class SidePanel extends React.Component {
@@ -20,7 +20,7 @@ export default class SidePanel extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      panelName : 'main'
+      panelName : 'about'
     }
   }
 
@@ -42,6 +42,7 @@ export default class SidePanel extends React.Component {
       edges,
       hasTimeInfo,
       hasGeoInfo,
+      hasCharts,
       onFocusElement,
       onUnfocusElement,
       selectElement,
@@ -57,24 +58,45 @@ export default class SidePanel extends React.Component {
       selectedElements,
       filterPanelIsOpen,
       focusElement,
-      geoMapVisible
+      geoMapVisible,
+      chartsVisible,
+      legendVisible
     } = this.props.ui
 
     return (
       <Drawer
-        width={250}
+        containerStyle={{
+
+          boxShadow: '1px 1px 8px  #000',
+          border: '1px solid #222',
+          backgroundColor: 'rgba(69,90,100 ,0.9)',
+          color:'#F2EFE9',
+         //margin: '20px 2px',
+
+         //align: 'left',
+         //marginBottom: '10px',
+         borderTopLeftRadius: '20px',
+         borderBottomLeftRadius: '20px',
+         //padding:"2px 2px 15px 15px ",
+         transitionEnabled: "true",}}
+        width={220}
+        height={10}
         openSecondary={true}
         open={filterPanelIsOpen}
+
         >
 
         <IconButton
           onClick={this.handleExpandChange}
-          style={{ float:'right', zIndex : 20 }}
+          style={{ float:'right', zIndex : 20000 }}
           >
-            <ClearIcon color='#CCC' />
+            <ClearIcon color='#F2EFE9' />
         </IconButton>
 
         <SidePanelActions
+          className={"sidepandiv"}
+          style={{backgroundColor: '#D4E6CC!important', color:'rgb(242, 239, 233)'}}
+
           setPanelName={this.setPanelName}
           user={user}
           router={router}
@@ -84,6 +106,7 @@ export default class SidePanel extends React.Component {
           panelName === 'main' ?
             <span>
               <PanelFilters
+
                 nodes={nodes}
                 nodeCategories={nodeCategories}
                 selectElement={selectElement}
@@ -103,22 +126,23 @@ export default class SidePanel extends React.Component {
             :
             null
         }
-
         {
           panelName === 'edit' ?
-            <PanelSettings
-              geoMapVisible={geoMapVisible}
-              hasTimeInfo={hasTimeInfo}
-              hasGeoInfo={hasGeoInfo}
-              authorIsLoggedIn={authorIsLoggedIn}
-              topogramId={topogram._id}
-              topogramTitle={topogram.title}
-              topogramIsPublic={topogram.sharedPublic}
-              router={router}
-              />
-            :
-            null
+          <PanelSettings
+            geoMapVisible={geoMapVisible}
+            hasCharts={hasCharts}
+            hasTimeInfo={hasTimeInfo}
+            hasGeoInfo={hasGeoInfo}
+            authorIsLoggedIn={authorIsLoggedIn}
+            topogramId={topogram._id}
+            topogramTitle={topogram.title}
+            topogramIsPublic={topogram.sharedPublic}
+            router={router}
+            />
+          :
+          null
         }
+
 
       </Drawer>
     )

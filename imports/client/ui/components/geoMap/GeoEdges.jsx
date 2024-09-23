@@ -24,7 +24,20 @@ export default class GeoEdges extends React.Component {
       return (
         <Polyline
           key={`edge-${i}`}
+          opacity={"0.8"}
           color={e.selected ? 'yellow' : e.data.color ? e.data.color : 'purple'}
+          //LIMIT THE EDGES MAX WIDTH
+          weight={e.data.weight?e.data.weight > 6 ? 20 : Math.pow(e.data.weight,2):1}
+          dashArray= {e.data.group?
+             (
+               e.data.group.includes("DASHED2")?"5,2":
+               e.data.group.includes("DASHED1")?"5,4":
+               e.data.group.includes("DASHED-2")?"5,2,2,5,2,2,5":
+               e.data.group.includes("DASHED-1")? "1,5,1,5,1":
+               ""
+             )
+             :""
+           }
           positions={e.coords}
           onClick={() => !isolateMode ?
             handleClickGeoElement({

@@ -22,19 +22,34 @@ const SelectedItem = ({
 
   return (
     <Card
+      style={{
+        //bottom: 5,
+
+        borderBottomRightRadius:"20px",
+        borderTopRightRadius:"5px",
+        borderBottomLeftRadius:"5px",
+        boxShadow: '1px 1px 8px  #000',
+        border: '1px solid #222',
+        backgroundColor: el.data.color? el.data.color : 'rgb(69,90,100)',
+        opacity: "0.7"
+
+      }}
       onExpandChange={() => onUnfocusElement(el)}
       >
       <CardTitle
+
+
+        style={{fontSize: "11pt", fontWeight: 'bold' }}
         showExpandableButton={true}
         title={title}
         titleStyle={{
-          lineHeight :'1.3em',
-          fontSize:'1.1em'
+          lineHeight :'1.2em',
+          fontSize:'0.8em'
         }}
         subtitle={el.group}
         closeIcon={<ClearIcon />}
       />
-      <CardText>
+    <CardText style={{fontSize: "9pt",color:"white"}}>
         {/* {
           el.group === 'nodes' ?
             <p>lat/lng : {`${lat}/${lng}`}</p>

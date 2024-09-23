@@ -14,13 +14,19 @@ const mapStateToProps = state => ({
   hasGeoInfo : state.nodes.hasGeoInfo,
   minTime : state.nodes.minTime,
   maxTime : state.nodes.maxTime,
+  minWeight : state.nodes.minWeight,
+  maxWeight : state.nodes.maxWeight,
+  pageTopos : state.pageTopos,
+
+
   nodeCategories : state.nodes.nodeCategories,
   edgesReady: state.edges.ready,
   edges: state.edges.edges,
   topogram : state.topogram.topogram,
   topogramReady : state.topogram.ready,
   userId : state.user._id,
-  isLoggedIn : state.user.isLoggedIn
+  isLoggedIn : state.user.isLoggedIn,
+  hasCharts : state.nodes.hasCharts
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -2,9 +2,11 @@ import React, { PropTypes } from 'react'
 import ui from 'redux-ui'
 
 import Cytoscape from './Cytoscape.jsx'
-import NetworkDefaultStyle from './NetworkDefaultStyle'
+import NetworkDefaultStyle from './NetworkDefaultStyle.js'
 
 import { nodeMove } from '/imports/api/nodes/nodesMethods'
+
+
 
 @ui()
 class Network extends React.Component {
@@ -37,7 +39,10 @@ class Network extends React.Component {
 
         // Truncate postion values to integers
         Object.keys(position).map( n => position[n] = Math.trunc(position[n]))
-        nodeMove.call({ topogramId : topogramId, nodeId : node.id(), position : position})
+        if (this.props.ui.SaveNodeMovesToDB) {
+          nodeMove.call({ topogramId : topogramId, nodeId : node.id(), position : position})
+
+        }
       })
   }
 
@@ -60,10 +65,12 @@ class Network extends React.Component {
     cy.on('mouseover', 'node', e => {
 
       const node = e.cyTarget
+      //console.log("WANT STATE?",this.state)
+      //console.log("HERE PROPS:",this.props)
       node.style({
         'border-width': 2,
-        'font-size' : 8,
-        'color' : 'black',
+        'font-size' : this.props.ui.fontSizeNetwork ? 1.5*this.props.ui.fontSizeNetwork : 6,
+        'color' : 'grey',
         'label'(d) {
           return d.data('name') ? d.data('name') : ''
         },
@@ -87,8 +94,9 @@ class Network extends React.Component {
           'border-width'(d) {
             return (d.data('group') == 'ghosts') ? 3 : 0
           },
-          'font-size' : 6,
-          'color' : 'gray',
+          'font-size' : this.props.ui.fontSizeNetwork ? this.props.ui.fontSizeNetwork : 40,
+          'color' : 'black',
+          'text-wrap': 'ellipsis',
           'label'(d) {
             return d.data('name') ? d.data('name').trunc(20) : ''
           }
@@ -101,16 +109,19 @@ class Network extends React.Component {
         // reset opacity
       if(!this.props.ui.isolateMode) {
         cy.edges().css({ 'opacity' : '.7' })
+        //cy.nodes().css({'font-size': this.props.ui.fontSizeNetwork})
+
       }
     })
 
     // set grab / free events
-    if (!this.props.ui.isolateMode) {this.setUpClickEvents()}
+    if (!this.props.ui.isolateMode)  {this.setUpClickEvents()}
     else {this.setUpGrabFreeEvents()}
 
     // store cytoscape object
     this.props.updateUI('cy', cy)
     this.cy = cy
+    //console.log(this.props);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -140,11 +151,17 @@ class Network extends React.Component {
     }
 
     // list of checks
+
     if ( this.props.ui.layoutName !== layoutName) shouldUpdate = true
     if ( this.props.ui.nodeRadius !== nodeRadius) shouldUpdate = true
     if ( this.props.nodes.length !== nodes.length) shouldUpdate = true
     if ( this.props.edges.length !== edges.length) shouldUpdate = true
+    //FOR BANDSTOUR MAPS
+    if ( this.props.nodes.style !== nodes.style) {
+    console.log("styles of nodes not matching");
 
+      shouldUpdate = true
+}
     // selected CATEGORIES
     if ( this.props.ui.selectedNodeCategories.length !== selectedNodeCategories.length) shouldUpdate = true
 
@@ -161,6 +178,7 @@ class Network extends React.Component {
     })
 
     return shouldUpdate
+    //return true
   }
 
   componentDidUpdate() {
@@ -225,6 +243,6 @@ Network.defaultProps = {
   edges : [],
   edgesReady : false,
   style : NetworkDefaultStyle(),
-  layoutName : 'preset'
+  layoutName : 'spread'
 }
 export default Network

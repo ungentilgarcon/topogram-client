@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react'
 import ui from 'redux-ui'
 import d3 from 'd3'
-import { Map, TileLayer } from 'react-leaflet'
+import { Map, TileLayer,ScaleControl,ZoomControl } from 'react-leaflet'
+//import {smoothZoom} from 'leaflet.smoothzoom'
 
 import 'leaflet/dist/leaflet.css'
 import './GeoMap.css'
@@ -23,8 +24,8 @@ class GeoMap extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      zoom : 3,
-      position : [51.505, -0.09]
+      zoom : 2.4,
+      position : [20.505, 22]
     }
   }
 
@@ -41,8 +42,12 @@ class GeoMap extends React.Component {
 
   handleClickGeoElement({group, el}) {
     const {cy} = this.props.ui
+    console.log("group",`${group}`);
+    console.log("${el.data.id}",el.data.id);
     const filter = `${group}[id='${el.data.id}']`
+    console.log(filter);
     const cyEl = cy.filter(filter)
+    console.log(cyEl);
     cyEl.data('selected') ?
       this.props.unselectElement(cyEl.json())
       :
@@ -54,7 +59,8 @@ class GeoMap extends React.Component {
 
     const {
       geoMapTile,
-      isolateMode
+      isolateMode,
+      cy
     } = this.props.ui
 
     const {
@@ -107,6 +113,11 @@ class GeoMap extends React.Component {
         <Map
           center={position}
           zoom={zoom}
+          zoomSnap= "0.01"
+           zoomDelta= "0.05"
+          zoomControl= {false}
+
+
           ref="map"
         >
           {
@@ -143,6 +154,13 @@ class GeoMap extends React.Component {
             minZoom={minZoom}
             maxZoom={maxZoom}
             ext={ext}
+          />
+          <ScaleControl
+            position='bottomright'
+          />
+
+        <ZoomControl
+          position='bottomright'
           />
         </Map>
       </div>

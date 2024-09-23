@@ -7,12 +7,12 @@ import AutoComplete from 'material-ui/AutoComplete'
 const messages = defineMessages({
   hint : {
     'id': 'queryBox.hint',
-    'defaultMessage': 'Search for a node',
+    'defaultMessage': 'Search for a venue',
     'message': ''
   },
   label : {
     'id': 'queryBox.label',
-    'defaultMessage': 'Nodes search',
+    'defaultMessage': 'Venue searcher',
     'message': ''
   }
 })
@@ -51,10 +51,21 @@ class QueryBox extends React.Component {
         filter={AutoComplete.fuzzyFilter}
         dataSource={dataSource}
         maxSearchResults={7}
+        floatingLabelStyle= {{
+          color: '#fff !important',
+        }}
+
+        underlineStyle={{
+          display:"none",
+
+
+        }}
+
         fullWidth={true}
         style={this.props.style}
         menuProps={{desktop:true}}
         hintText={formatMessage(messages.hint)}
+
         floatingLabelText={formatMessage(messages.label)}
         onNewRequest={this.handleNewRequest}
         // onUpdateInput={this.handleUpdateInput}

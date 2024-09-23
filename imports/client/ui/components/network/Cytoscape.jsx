@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import cytoscape from 'cytoscape'
+import panzoom from 'cytoscape-panzoom'
 import spread from 'cytoscape-spread'
-
+import './Cytoscape.css'
 import { scaleLinear } from 'd3-scale'
 
 // register force layout
 spread(cytoscape)
+panzoom(cytoscape)
 
 const cyStyle = {
   height: '100%',
@@ -13,11 +15,43 @@ const cyStyle = {
   position: 'fixed',
   top: '0px',
   left: '0',
-  zIndex : -1
+  zIndex : -1,
+  background : "rgba(168,221,207,0.4)"
 }
+//PANZOOM DEFAULTS
+var defaults = {
+  position : "float !important",
+  align : "center",
+  zoomFactor: 0.02, // zoom factor per zoom tick
+  zoomDelay: 70, // how many ms between zoom ticks
+  minZoom: 0.1, // min zoom level
+  maxZoom: 10, // max zoom level
+  fitPadding: 50, // padding when fitting
+  panSpeed: 10, // how many ms in between pan ticks
+  panDistance: 10, // max pan distance per tick
+  panDragAreaSize: 75, // the length of the pan drag box in which the vector for panning is calculated (bigger = finer control of pan speed and direction)
+  panMinPercentSpeed: 0.25, // the slowest speed we can pan by (as a percent of panSpeed)
+  panInactiveArea: 8, // radius of inactive area in pan drag box
+  panIndicatorMinOpacity: 0.5, // min opacity of pan indicator (the draggable nib); scales from this to 1.0
+  zoomOnly: false, // a minimal version of the ui only with zooming (useful on systems with bad mousewheel resolution)
+  fitSelector: undefined, // selector of elements to fit
+  animateOnFit: function(){ // whether to animate on fit
+    return false;
+  },
+  fitAnimationDuration: 1000, // duration of animation on fit
+
+  // icon class names
+  sliderHandleIcon: 'fa fa-minus',
+  zoomInIcon: 'fa fa-plus',
+  zoomOutIcon: 'fa fa-minus',
+  resetIcon: 'fa fa-expand'
+};
+
+
 
 class Cytoscape extends Component {
   cy = null;
+
 
   // static propTypes = {
   //   elements : {
@@ -40,10 +74,13 @@ class Cytoscape extends Component {
       container: this.refs.cyelement,
       layout: {
         name: 'preset' // load saved positions
+      //  name: 'spread' // load saved positions
+
       },
       style,
       elements
     })
+    cy.panzoom( defaults );
 
     this.cy = cy
 
@@ -64,7 +101,8 @@ class Cytoscape extends Component {
 
     if (layoutName == 'spread') {
       layoutConfig.minDist= 50  // Minimum distance between nodes
-      layoutConfig.padding= 80  // Padding
+      layoutConfig.padding= 80
+      layoutConfig.fontSize= 11
     }
 
     this.cy.layout(layoutConfig)
@@ -75,11 +113,12 @@ class Cytoscape extends Component {
     const weights = this.cy.nodes().map( d => d.data('weight') )
     const min = Math.min.apply(Math, weights)
     const max = Math.max.apply(Math, weights)
-
+    // console.log("graph legend : min : ", min," max : ",max," units of weight");
+    //onsole.log(max);
     // calculate radius range
     const weightDomain = scaleLinear()
       .domain([ min, max ])
-      .range([6,40])
+      .range([5,15])
 
     // apply size
     this.cy.style()
@@ -100,7 +139,7 @@ class Cytoscape extends Component {
       this.cy.nodes().minDegree(),
       this.cy.nodes().maxDegree()
     ]).range([6,40])
-
+    console.log("graph legend : min : ", this.cy.nodes().minDegree()," max : ",this.cy.nodes().maxDegree()," degrees");
     // apply size
     this.cy.style()
       .selector('node')
@@ -109,6 +148,7 @@ class Cytoscape extends Component {
           return degreeDomain(e.degree())
         },
         'height'(e) {
+
           return degreeDomain(e.degree())
         }
       }).update()
@@ -153,7 +193,10 @@ class Cytoscape extends Component {
     return (<div
       style={Object.assign({}, cyStyle, { width, height })}
       ref="cyelement"
-    />)
+      >
+      <cytoscapePanzoom/>
+
+    </div>)
   }
 }
 

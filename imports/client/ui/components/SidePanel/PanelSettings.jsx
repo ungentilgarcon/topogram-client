@@ -7,31 +7,42 @@ import PanelSelector from '../panelSelector/PanelSelector.jsx'
 import NetworkOptions from '../networkOptions/NetworkOptions.jsx'
 import GeoMapOptions from '../geoMapOptions/GeoMapOptions.jsx'
 import Settings from '../settings/Settings.jsx'
-
+import GraphicalTweaks from '../settings/GraphicalTweaks.jsx'
 const PanelSettings = ({
   geoMapVisible,
+  chartsVisible,
+
   authorIsLoggedIn,
   topogramId,
   topogramTitle,
   topogramIsPublic,
   hasTimeInfo,
   hasGeoInfo,
+  hasCharts,
   router
 }) => (
   <span>
-    <Subheader>Settings</Subheader>
+    <Subheader style={{backgroundColor: '#D4E6CC!important', color:'rgb(242, 239, 233)'}}
+    >Settings</Subheader>
 
     <PanelSelector
-      // bottom={timeLineVisible ? '21vh' : '1em'}
+
       hasTimeInfo={ hasTimeInfo }
       hasGeoInfo={ hasGeoInfo }
+      hasCharts={ hasCharts }
     />
 
     { geoMapVisible ? <GeoMapOptions/> : null }
-    <NetworkOptions/>
+    { chartsVisible ? <ChartsOptions/> : null }
+    <NetworkOptions
+    style={{backgroundColor: '#D4E6CC!important', color:'rgb(242, 239, 233)'}}
+
+    />
+
     {
       authorIsLoggedIn ?
       <Settings
+      style={{backgroundColor: '#D4E6CC!important', color:'rgb(242, 239, 233)'}}
         topogramId={topogramId}
         topogramTitle= {topogramTitle}
         topogramSharedPublic={topogramIsPublic}
@@ -39,6 +50,11 @@ const PanelSettings = ({
       />
       :
       null
+    }
+    {
+      <GraphicalTweaks
+      style={{backgroundColor: '#D4E6CC!important', color:'rgb(242, 239, 233)'}}
+      />
     }
   </span>
 )

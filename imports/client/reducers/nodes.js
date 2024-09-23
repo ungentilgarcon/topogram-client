@@ -42,7 +42,29 @@ export function nodes(state = initialState, action) {
       .filter(n => n.data.end)
       .map(n => new Date(n.data.end))
       .sort((a,b) => b.getTime()-a.getTime())
+//console.log(ends,"ends");
 
+//console.log(nodes,"nodes");
+
+//TODOIMPROVE THIS
+      const weighsMin = nodes
+        .filter(n => n.data.weight)
+        .map(n => n.data.weight)
+        .sort((a,b) =>a-b)
+
+
+
+        // {
+        //   return(
+        //   [a-b,b-a]
+        //   )
+        // })
+        const weighsMax = nodes
+          .filter(n => n.data.weight)
+          .map(n => n.data.weight)
+          .sort((a,b) =>b-a)
+//console.log(weighsMin,"weighsMin");
+//console.log(weighsMax,"weighsMax");
     const hasTimeInfo = !!(starts.length || ends.length)
 
     const nodeCategories = [
@@ -57,6 +79,8 @@ export function nodes(state = initialState, action) {
 
     const hasGeoInfo = !!latLngs.length
 
+    const hasCharts = true
+
     return {
       ...state,
       nodes,
@@ -64,7 +88,11 @@ export function nodes(state = initialState, action) {
       hasGeoInfo,
       nodeCategories,
       minTime: starts[0],
-      maxTime: ends[0]
+      valueRangeInit: () => [starts[0],ends[0]],
+      maxTime: ends[0],
+      minWeight: weighsMin[0],
+      maxWeight: weighsMax[1],
+
     }
   }
   case STOP_SUBSCRIPTION:
